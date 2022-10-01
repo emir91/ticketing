@@ -5,17 +5,30 @@ interface UserModel {
   password: string;
 }
 
-const userSchema = new Schema<UserModel>({
-  email: {
-    type: String,
-    required: true,
-  },
+const userSchema = new Schema<UserModel>(
+  {
+    email: {
+      type: String,
+      required: true,
+    },
 
-  password: {
-    type: String,
-    required: true,
+    password: {
+      type: String,
+      required: true,
+    },
   },
-});
+  {
+    // TODO: this should be handeled on the view level
+    toJSON: {
+      transform(doc, ret) {
+        ret.id = ret._id;
+        delete ret._id;
+        delete ret.password;
+      },
+      versionKey: false,
+    },
+  }
+);
 
 userSchema.pre("save", async function (done) {
   if (this.isModified("password")) {
