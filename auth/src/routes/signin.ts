@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
-import { body, validationResult } from "express-validator";
-import { RequestValidationError } from "../errors";
+import { body } from "express-validator";
+import { validateRequest } from "../middlewares/validate-request";
 
 const router = express.Router();
 
@@ -10,13 +10,8 @@ router.post(
     body("email").isEmail().withMessage("Provide valid email"),
     body("password").trim().isEmpty().withMessage("Provide valid password"),
   ],
-  (req: Request, res: Response) => {
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-      throw new RequestValidationError(errors.array());
-    }
-  }
+  validateRequest,
+  (req: Request, res: Response) => {}
 );
 
 export default router;
