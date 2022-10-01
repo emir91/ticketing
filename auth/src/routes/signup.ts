@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
-import jwt from "jsonwebtoken";
 import { body } from "express-validator";
+import jwt from "jsonwebtoken";
 import { BadRequestError } from "../errors/bad-request-error";
 import { User } from "../models/user";
 import { validateRequest } from "../middlewares/validate-request";
@@ -41,7 +41,6 @@ router.post(
       },
       process.env.JWT_KEY!
     );
-
     // store it on req.session
     req.session = {
       jwt: userJwt,
