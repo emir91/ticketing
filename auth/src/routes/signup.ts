@@ -44,7 +44,7 @@ router.post(
         id: user.id,
         email: user.email,
       },
-      "secureKey"
+      process.env.JWT_KEY!
     );
 
     // store it on req.session
