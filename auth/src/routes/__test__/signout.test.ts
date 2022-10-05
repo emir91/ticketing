@@ -1,15 +1,15 @@
 import request from "supertest";
 import { app } from "../../app";
+import { signupHelper } from "../test-utils/signup-helper";
 
 test("signout logic", async () => {
-  const response = await request(app)
-    .post("/api/users/signup")
-    .send({
-      email: "test@test.com",
-      password: "123456",
-    })
-    .expect(201);
-  await request(app).post("/api/users/signout").send({}).expect(200);
+  const authResponse = await signupHelper();
 
-  expect(response.get("Set-Cookie")).toBeDefined;
+  const response = await request(app)
+    .post("/api/users/signout")
+    .set("Cookie", authResponse)
+    .send({})
+    .expect(200);
+
+  expect(response.body).toEqual({});
 });
