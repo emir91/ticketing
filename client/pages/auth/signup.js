@@ -1,27 +1,21 @@
 import { useState } from "react"
-import axios from "axios"
+import useRequest from "../../hooks/use-request"
 
 const SignupForm = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [errors, setErrors] = useState([])
 
-    const submitHandler = async (e) => {
+    const {doRequest, errors} = useRequest({
+        url: "/api/users/signup", 
+        method: 'post', 
+        body: {email, password}
+    })
+
+    const submitHandler =  (e) => {
         e.preventDefault()
-        try {
-            if(errors.length >= 1) {
-                setErrors([])
-            }
-            const response = await axios.post("/api/users/signup", { email, password} )
-            console.log('form submitted!', response.data);
-
-        } catch (error) {
-            setErrors(error.response.data.errors)
-            console.log('Error', error.response.data.errors);        
-        }
+        doRequest()
     }
     
-
     return (
         <form onSubmit={submitHandler}>
             <h1>Sign Up</h1>
@@ -29,7 +23,11 @@ const SignupForm = () => {
                 <label>Email</label>
                 <input className="form-control" onChange={e => setEmail(e.target.value)}/>
                 <p className="text-danger">
-                    {(errors.some(e => e.field === 'email') || !errors[0]?.hasOwnProperty('field')) && errors[0]?.message}
+                    {
+                      (errors?.some(e => e.field === 'email') || 
+                      (errors?.length > 0 && !errors[0]?.hasOwnProperty('field'))) && 
+                      errors[0]?.message
+                    }
                 </p>
             </div>
             <div className="form-group">
@@ -37,8 +35,8 @@ const SignupForm = () => {
                 <input type="password" className="form-control" onChange={e => setPassword(e.target.value)}/>
                 <p className="text-danger">
                     {
-                     ((errors.some(e => e.field === 'password') && errors.length > 1) && errors[1].message) || 
-                     (((errors.some(e => e.field === 'password') && errors.length === 1) && errors[0].message))
+                     ((errors?.some(e => e.field === 'password') && errors.length > 1) && errors[1].message) || 
+                     (((errors?.some(e => e.field === 'password') && errors.length === 1) && errors[0].message))
                     }
                 </p>
             </div>
