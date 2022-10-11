@@ -1,8 +1,8 @@
 import buildCient from "../api/build-client"
 
-const Home = () => {
+const Home = ({ currentUser }) => {
     return (
-        <h1>Home Page</h1>
+        currentUser ? <h1>You are signed in</h1> : <h1>You are NOT signed in</h1>
     )
 }
 
