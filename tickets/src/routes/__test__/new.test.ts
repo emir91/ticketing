@@ -1,5 +1,6 @@
 import request from "supertest";
 import { app } from "../../app";
+import { Ticket } from "../../models/ticket";
 import { cookieGenerator } from "../test-utils/cookie-generator";
 
 describe("New ticket test suite", () => {
@@ -58,10 +59,12 @@ describe("New ticket test suite", () => {
   });
 
   test("creates a ticket with valid inputs", async () => {
-    // TODO: add in a chek to make sure a ticket was saved
+    let tickets = await Ticket.find({});
+    expect(tickets.length).toBe(0);
+
     const cookie = cookieGenerator();
 
-    await request(app)
+    const response = await request(app)
       .post("/api/tickets")
       .set("Cookie", cookie)
       .send({
@@ -69,5 +72,9 @@ describe("New ticket test suite", () => {
         price: 10,
       })
       .expect(201);
+
+    tickets = await Ticket.find({});
+
+    expect(tickets.length).toBe(1);
   });
 });

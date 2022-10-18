@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import { requireAuth, validateRequest } from "@emir-tickets/common";
 import { body } from "express-validator";
+import { Ticket } from "../models/ticket";
 
 const router = Router();
 
@@ -15,6 +16,16 @@ router.post(
   ],
   validateRequest,
   async (req: Request, res: Response) => {
+    const { title, price } = req.body;
+
+    const ticket = new Ticket({
+      title,
+      price,
+      userId: req.currentUser?.id,
+    });
+
+    await ticket.save();
+
     res.sendStatus(201);
   }
 );
