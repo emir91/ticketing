@@ -64,7 +64,7 @@ describe("New ticket test suite", () => {
 
     const cookie = cookieGenerator();
 
-    const response = await request(app)
+    await request(app)
       .post("/api/tickets")
       .set("Cookie", cookie)
       .send({

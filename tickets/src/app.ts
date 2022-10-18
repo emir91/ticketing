@@ -4,6 +4,7 @@ import { json } from "body-parser";
 import cookieSession from "cookie-session";
 import { errorHandler, NotFoundError, currentUser } from "@emir-tickets/common";
 import newRouterHandler from "../src/routes/new";
+import showRouterHandler from "../src/routes/show";
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use(
 app.use(currentUser);
 
 app.use(newRouterHandler);
+app.use(showRouterHandler);
 
 app.all("*", async () => {
   throw new NotFoundError();
