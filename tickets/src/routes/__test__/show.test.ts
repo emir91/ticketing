@@ -1,10 +1,13 @@
 import request from "supertest";
+import mongoose from "mongoose";
 import { app } from "../../app";
 import { cookieGenerator } from "../test-utils/cookie-generator";
 
 describe("Show ticket route test suite", () => {
   test("Ticket not found", async () => {
-    await request(app).get("/api/tickets/dlkffhdlkgh").send().expect(404);
+    const id = new mongoose.Types.ObjectId().toHexString();
+
+    await request(app).get(`/api/tickets/${id}`).send().expect(404);
   });
 
   test("Ticket found", async () => {
