@@ -6,6 +6,7 @@ import { errorHandler, NotFoundError, currentUser } from "@emir-tickets/common";
 import newRouterHandler from "../src/routes/new";
 import showRouterHandler from "../src/routes/show";
 import indexRouterHandler from "../src/routes/index";
+import updateRouterHandler from "../src/routes/update";
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use(currentUser);
 app.use(newRouterHandler);
 app.use(showRouterHandler);
 app.use(indexRouterHandler);
+app.use(updateRouterHandler);
 
 app.all("*", async () => {
   throw new NotFoundError();
