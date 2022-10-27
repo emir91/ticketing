@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import request from "supertest";
 import { app } from "../../app";
 import { cookieGenerator } from "../test-utils/cookie-generator";
+import { natsWrapper } from "../../nats-wrapper";
 
 describe("Update ticket test suite", () => {
   test("returns a 404 if the provided id does not exist", async () => {
@@ -104,5 +105,29 @@ describe("Update ticket test suite", () => {
 
     expect(updateTicket.body.title).toEqual("updated title");
     expect(updateTicket.body.price).toEqual(12);
+  });
+
+  test("event published", async () => {
+    const cookie = cookieGenerator();
+
+    const response = await request(app)
+      .post("/api/tickets")
+      .set("Cookie", cookie)
+      .send({
+        title: "title",
+        price: 10,
+      })
+      .expect(201);
+
+    await request(app)
+      .put(`/api/tickets/${response.body.id}`)
+      .set("Cookie", cookie)
+      .send({
+        title: "updated title",
+        price: 12,
+      })
+      .expect(200);
+
+    expect(natsWrapper.client.publish).toBeCalled();
   });
 });

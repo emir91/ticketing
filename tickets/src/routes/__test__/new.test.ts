@@ -1,6 +1,7 @@
 import request from "supertest";
 import { app } from "../../app";
 import { Ticket } from "../../models/ticket";
+import { natsWrapper } from "../../nats-wrapper";
 import { cookieGenerator } from "../test-utils/cookie-generator";
 
 describe("New ticket test suite", () => {
@@ -76,5 +77,23 @@ describe("New ticket test suite", () => {
     tickets = await Ticket.find({});
 
     expect(tickets.length).toBe(1);
+  });
+
+  test("validate event publishing", async () => {
+    let tickets = await Ticket.find({});
+    expect(tickets.length).toBe(0);
+
+    const cookie = cookieGenerator();
+
+    await request(app)
+      .post("/api/tickets")
+      .set("Cookie", cookie)
+      .send({
+        title: "test",
+        price: 10,
+      })
+      .expect(201);
+
+    expect(natsWrapper.client.publish).toBeCalled();
   });
 });
