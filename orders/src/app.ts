@@ -3,10 +3,10 @@ import "express-async-errors";
 import { json } from "body-parser";
 import cookieSession from "cookie-session";
 import { errorHandler, NotFoundError, currentUser } from "@emir-tickets/common";
-import newRouterHandler from "../src/routes/new";
-import showRouterHandler from "../src/routes/show";
-import indexRouterHandler from "../src/routes/index";
-import updateRouterHandler from "../src/routes/update";
+import indexRouterHandler from "./routes/index";
+import newRouterHandler from "./routes/new";
+import showRouterHandler from "./routes/show";
+import deleteRouterHandler from "./routes/delete";
 
 const app = express();
 
@@ -21,10 +21,10 @@ app.use(
 
 app.use(currentUser);
 
+app.use(indexRouterHandler);
 app.use(newRouterHandler);
 app.use(showRouterHandler);
-app.use(indexRouterHandler);
-app.use(updateRouterHandler);
+app.use(deleteRouterHandler);
 
 app.all("*", async () => {
   throw new NotFoundError();
