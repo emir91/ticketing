@@ -1,11 +1,12 @@
 import { Schema, model } from "mongoose";
 import { OrderStatus } from "@emir-tickets/common";
+import { TicketModel } from "./ticket";
 
 interface OrderModel {
   userId: string;
   status: OrderStatus;
   expiresAt: Date;
-  ticket: TicketDoc;
+  ticket: TicketModel;
 }
 
 const orderSchema = new Schema<OrderModel>(

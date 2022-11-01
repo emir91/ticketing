@@ -30,4 +30,4 @@ const ticketSchema = new Schema<TicketModel>(
 
 const Ticket = model<TicketModel>("Ticket", ticketSchema);
 
-export { Ticket };
+export { Ticket, TicketModel };
