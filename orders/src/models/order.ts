@@ -43,4 +43,4 @@ const orderSchema = new Schema<OrderModel>(
 
 const Order = model<OrderModel>("Order", orderSchema);
 
-export { Order };
+export { Order, OrderStatus };

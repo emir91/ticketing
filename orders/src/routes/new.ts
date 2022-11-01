@@ -2,13 +2,11 @@ import { Router, Request, Response } from "express";
 import {
   BadRequestError,
   NotFoundError,
-  OrderStatus,
   requireAuth,
   validateRequest,
 } from "@emir-tickets/common";
 import { body } from "express-validator";
 import { Ticket } from "../models/ticket";
-import { Order } from "../models/order";
 
 const router = Router();
 
@@ -34,18 +32,9 @@ router.post(
     }
 
     // Make sure that this ticket is not already reserved
-    const existingOrder = await Order.findOne({
-      ticket: ticket,
-      status: {
-        $in: [
-          OrderStatus.AwaitingPayment,
-          OrderStatus.Complete,
-          OrderStatus.Created,
-        ],
-      },
-    });
+    const isReserved = await ticket.isReserved();
 
-    if (existingOrder) {
+    if (isReserved) {
       throw new BadRequestError("Ticket is already reserved");
     }
     res.send({});
