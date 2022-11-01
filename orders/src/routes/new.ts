@@ -2,13 +2,16 @@ import { Router, Request, Response } from "express";
 import {
   BadRequestError,
   NotFoundError,
+  OrderStatus,
   requireAuth,
   validateRequest,
 } from "@emir-tickets/common";
 import { body } from "express-validator";
 import { Ticket } from "../models/ticket";
+import { Order } from "../models/order";
 
 const router = Router();
+const EXPIRATION_WINDOW_SECONDS = 15 * 60;
 
 router.post(
   "/api/orders",
@@ -37,7 +40,21 @@ router.post(
     if (isReserved) {
       throw new BadRequestError("Ticket is already reserved");
     }
-    res.send({});
+
+    // Calculate an expiration date for this order
+    const expiration = new Date();
+    expiration.setSeconds(expiration.getSeconds() + EXPIRATION_WINDOW_SECONDS);
+
+    // Build order and save it to the database
+    const order = new Order({
+      userId: req.currentUser!.id,
+      status: OrderStatus.Created,
+      expiresAt: expiration,
+      ticket,
+    });
+    await order.save();
+
+    res.status(201).send(order);
   }
 );
 
