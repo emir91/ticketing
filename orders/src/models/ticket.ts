@@ -29,8 +29,6 @@ const ticketSchema = new Schema<TicketModel>(
   }
 );
 
-const Ticket = model<TicketModel>("Ticket", ticketSchema);
-
 ticketSchema.methods.isReserved = async function () {
   const existingOrder = await Order.findOne({
     ticket: this,
@@ -45,5 +43,7 @@ ticketSchema.methods.isReserved = async function () {
 
   return !!existingOrder;
 };
+
+const Ticket = model<TicketModel>("Ticket", ticketSchema);
 
 export { Ticket, TicketModel };
