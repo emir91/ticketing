@@ -4,6 +4,7 @@ import { app } from "../../app";
 import { cookieGenerator } from "../test-utils/cookie-generator";
 import { Ticket } from "../../models/ticket";
 import { Order, OrderStatus } from "../../models/order";
+import { natsWrapper } from "../../nats-wrapper";
 
 describe("New Order Test Suite", () => {
   test("returns an error if the ticket does not exist", async () => {
@@ -60,5 +61,23 @@ describe("New Order Test Suite", () => {
     const order = await Order.find({});
 
     expect(order.length).not.toBe(0);
+  });
+
+  test("emits order:create event", async () => {
+    const cookie = cookieGenerator();
+    const ticket = Ticket.build({
+      title: "test ticket",
+      price: 10,
+    });
+
+    await ticket.save();
+
+    await request(app)
+      .post("/api/orders")
+      .set("Cookie", cookie)
+      .send({ ticketId: ticket.id })
+      .expect(201);
+
+    expect(natsWrapper.client.publish).toHaveBeenCalled();
   });
 });

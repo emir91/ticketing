@@ -4,6 +4,7 @@ import request from "supertest";
 import { app } from "../../app";
 import { Order } from "../../models/order";
 import { Ticket } from "../../models/ticket";
+import { natsWrapper } from "../../nats-wrapper";
 import { cookieGenerator } from "../test-utils/cookie-generator";
 
 describe("Cancelled order test suite", () => {
@@ -74,5 +75,33 @@ describe("Cancelled order test suite", () => {
       .set("Cookie", cookieTwo)
       .send()
       .expect(401);
+  });
+
+  test("emit order:cancelled event", async () => {
+    const cookie = cookieGenerator();
+
+    // Create a ticket
+    const ticket = Ticket.build({
+      title: "test ticket",
+      price: 10,
+    });
+
+    await ticket.save();
+
+    // make a request to build an order with this ticket
+    const { body: order } = await request(app)
+      .post("/api/orders")
+      .set("Cookie", cookie)
+      .send({ ticketId: ticket.id })
+      .expect(201);
+
+    // make a request to cancel the order
+    await request(app)
+      .delete(`/api/orders/${order.id}`)
+      .set("Cookie", cookie)
+      .send()
+      .expect(204);
+
+    expect(natsWrapper.client.publish).toHaveBeenCalled();
   });
 });
