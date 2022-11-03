@@ -4,7 +4,7 @@ import { cookieGenerator } from "../test-utils/cookie-generator";
 import { Ticket } from "../../models/ticket";
 
 const createTicket = async () => {
-  const ticket = new Ticket({
+  const ticket = Ticket.build({
     title: "test ticket",
     price: 10,
   });

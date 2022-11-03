@@ -11,7 +11,7 @@ describe("Cancelled order test suite", () => {
     const cookie = cookieGenerator();
 
     // Create a ticket
-    const ticket = new Ticket({
+    const ticket = Ticket.build({
       title: "test ticket",
       price: 10,
     });
@@ -54,7 +54,7 @@ describe("Cancelled order test suite", () => {
     const cookieTwo = cookieGenerator();
 
     // Create a ticket
-    const ticket = new Ticket({
+    const ticket = Ticket.build({
       title: "test ticket",
       price: 10,
     });

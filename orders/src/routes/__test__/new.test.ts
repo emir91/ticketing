@@ -19,7 +19,7 @@ describe("New Order Test Suite", () => {
 
   test("returns an error if the ticket is already reserved", async () => {
     const cookie = cookieGenerator();
-    const ticket = new Ticket({
+    const ticket = Ticket.build({
       title: "test ticket",
       price: 10,
     });
@@ -44,7 +44,7 @@ describe("New Order Test Suite", () => {
 
   test("reserves a ticket", async () => {
     const cookie = cookieGenerator();
-    const ticket = new Ticket({
+    const ticket = Ticket.build({
       title: "test ticket",
       price: 10,
     });

@@ -1,31 +1,40 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Model, Document } from "mongoose";
 import { OrderStatus } from "@emir-tickets/common";
-import { TicketModel } from "./ticket";
+import { TicketDoc } from "./ticket";
 
-interface OrderModel {
+interface OrderAttrs {
   userId: string;
   status: OrderStatus;
   expiresAt: Date;
-  ticket: TicketModel;
+  ticket: TicketDoc;
 }
 
-const orderSchema = new Schema<OrderModel>(
+interface OrderDoc extends Document {
+  userId: string;
+  status: OrderStatus;
+  expiresAt: Date;
+  ticket: TicketDoc;
+}
+
+interface OrderModel extends Model<OrderDoc> {
+  build(attrs: OrderAttrs): OrderDoc;
+}
+
+const orderSchema = new Schema(
   {
     userId: {
       type: String,
       required: true,
     },
-
     status: {
       type: String,
       required: true,
       enum: Object.values(OrderStatus),
+      default: OrderStatus.Created,
     },
-
     expiresAt: {
       type: Schema.Types.Date,
     },
-
     ticket: {
       type: Schema.Types.ObjectId,
       ref: "Ticket",
@@ -41,6 +50,10 @@ const orderSchema = new Schema<OrderModel>(
   }
 );
 
-const Order = model<OrderModel>("Order", orderSchema);
+orderSchema.statics.build = (attrs: OrderAttrs) => {
+  return new Order(attrs);
+};
+
+const Order = model<OrderDoc, OrderModel>("Order", orderSchema);
 
 export { Order, OrderStatus };
