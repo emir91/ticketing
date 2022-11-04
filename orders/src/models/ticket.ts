@@ -36,7 +36,7 @@ const ticketSchema = new Schema(
     },
   }
 );
-
+// test comment
 ticketSchema.statics.build = (attrs: TicketAttrs) => {
   return new Ticket(attrs);
 };
