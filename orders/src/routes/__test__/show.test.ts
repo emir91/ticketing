@@ -10,7 +10,7 @@ describe("Single order fetch test suite", () => {
     const cookie = cookieGenerator();
 
     // Create a ticket
-    const ticket = new Ticket({
+    const ticket = Ticket.build({
       title: "test ticket",
       price: 10,
     });
