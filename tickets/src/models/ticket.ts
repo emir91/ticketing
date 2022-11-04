@@ -1,12 +1,22 @@
-import { Schema, model } from "mongoose";
+import { Document, model, Model, Schema } from "mongoose";
 
-interface TicketModel {
+interface TicketAttrs {
   title: string;
   price: number;
   userId: string;
 }
 
-const ticketSchema = new Schema<TicketModel>(
+interface TicketDoc extends Document {
+  title: string;
+  price: number;
+  userId: string;
+}
+
+interface TicketModel extends Model<TicketDoc> {
+  build(attrs: TicketAttrs): TicketDoc;
+}
+
+const ticketSchema = new Schema(
   {
     title: {
       type: String,
@@ -33,6 +43,10 @@ const ticketSchema = new Schema<TicketModel>(
   }
 );
 
-const Ticket = model<TicketModel>("Ticket", ticketSchema);
+ticketSchema.statics.build = (attrs: TicketAttrs) => {
+  return new Ticket(attrs);
+};
+
+const Ticket = model<TicketDoc, TicketModel>("Ticket", ticketSchema);
 
 export { Ticket };
