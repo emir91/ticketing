@@ -34,7 +34,6 @@ const userSchema = new Schema(
     },
   },
   {
-    // TODO: this should be handeled on the view level
     toJSON: {
       transform(doc, ret) {
         ret.id = ret._id;
