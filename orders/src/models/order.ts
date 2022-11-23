@@ -1,6 +1,5 @@
-import { Schema, model, Model, Document, version } from "mongoose";
+import { Schema, model, Model, Document } from "mongoose";
 import { OrderStatus } from "@emir-tickets/common";
-import { updateIfCurrentPlugin } from "mongoose-update-if-current";
 import { TicketDoc } from "./ticket";
 
 interface OrderAttrs {
@@ -51,9 +50,6 @@ const orderSchema = new Schema(
     },
   }
 );
-
-orderSchema.set("versionKey", "version");
-orderSchema.plugin(updateIfCurrentPlugin);
 
 orderSchema.statics.build = (attrs: OrderAttrs) => {
   return new Order(attrs);
