@@ -11,6 +11,7 @@ describe("Single order fetch test suite", () => {
 
     // Create a ticket
     const ticket = Ticket.build({
+      id: new mongoose.Types.ObjectId().toHexString(),
       title: "test ticket",
       price: 10,
     });
@@ -51,6 +52,7 @@ describe("Single order fetch test suite", () => {
 
     // Create a ticket
     const ticket = Ticket.build({
+      id: new mongoose.Types.ObjectId().toHexString(),
       title: "test ticket",
       price: 10,
     });
