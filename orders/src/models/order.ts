@@ -11,9 +11,9 @@ interface OrderAttrs {
 
 interface OrderDoc extends Document {
   userId: string;
-  version: number;
   status: OrderStatus;
   expiresAt: Date;
+  version: number;
   ticket: TicketDoc;
 }
 
@@ -50,6 +50,16 @@ const orderSchema = new Schema(
     },
   }
 );
+
+orderSchema.set("versionKey", "version");
+
+orderSchema.pre("save", function (done) {
+  this.$where = {
+    version: this.get("version") - 1,
+  };
+
+  done();
+});
 
 orderSchema.statics.build = (attrs: OrderAttrs) => {
   return new Order(attrs);
